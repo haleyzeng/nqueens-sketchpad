@@ -10,78 +10,21 @@ var patchSize = 75;
 
 var queensLocations = [];
 
-var makeCircle = function(x, y, r){
-    ctx.fillStyle = "#ff0000" ;
-    ctx.beginPath();
-    ctx.arc(x, y, r, 0, 360);
-    ctx.fill();
-    ctx.stroke();
-}
-
-var clear = function(e) {
-    e.preventDefault();
-    ctx.clearTect(0, 0, 500, 500);
-}
-
-
 var requestID;
 
 var growingCircle = function(){
     window.cancelAnimationFrame( requestID );
-    var radius = 1;
-    var rInc = 1;
-    var x = canvas.width / 2;
-    var y = canvas.height / 2;
-    var drawDot = function() {
-	
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	makeCircle(x, y, radius);
-	
-	if (radius < 1 || radius > canvas.height / 2){
-	    rInc = - rInc;
-	}
-	radius += rInc;
-	
-	requestID = window.requestAnimationFrame( drawDot );
-    }
-    drawDot();
-}
 
-var dvd = function(){
-    window.cancelAnimationFrame( requestID );
-    var radius = 20
-    var x = 100;
-    var y = canvas.height / 2;
+    //vars
     
-    var xInc = 2;
-    var yInc = 3;
-
-    var size = 60;
     var drawDot = function() {
 	
-	ctx.clearRect(0, 0, canvas.width, canvas.height);
-	var img = new Image(20, 20);
-	img.src = "right.jpg";
-
-	ctx.drawImage(img, x, y, size, size);
-	
-	if (x < 0  || x > canvas.width - size){
-	    xInc = - xInc;
-	}
-	if (y < 0 || y > canvas.height - size){
-	    yInc = -yInc;
-	}
-
-	x += xInc;
-	y += yInc;
-	    
-
+	//increment val to have animation effect
 	
 	requestID = window.requestAnimationFrame( drawDot );
     }
     drawDot();
 }
-
 
 var stop = function(){
     window.cancelAnimationFrame( requestID );
@@ -103,7 +46,6 @@ var changeCanvasSize = function(e){
     canvas.setAttribute("width", size * patchSize);
     
     drawBackground();
-
 }
 
 var drawBox = function(x, y){
@@ -141,8 +83,8 @@ var place = function(e){
     var x = xcor - (xcor % 75);
     var y = ycor - (ycor % 75); 
     drawQueen(x, y);
-
     queensLocations.push([x, y]);
+    checkQueen(x, y);
 }
 
 var undo = function(){
