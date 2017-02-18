@@ -5,14 +5,28 @@
  </head>
 
   <body>
-    <h1>growing, shrinking, bouncing</h1>
-    <canvas height="480" width="480" style="border: 1px solid;" id="canvas"></canvas>
+    <h1>The N-Queens Sketchpad</h1>
+
+    Select size:<br>
+    <select id="dropdown">
+      <option value="1">1</option>
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+      <option value="6">6</option>
+      <option value="7">7</option>
+      <option value="8">8</option>
+    </select>
     <br>
-    <button id="circle">circle</button>
-    <button id="dvd">dvd</button>
-    <button id="stop">Stop</button>
+    <br>
     
-    <script src="draw.js"></script>
+    <canvas height="75" width="75" style="border: 1px solid;" id="canvas"></canvas>
+    <br>
+    <button id="clear">clear</button>
+    <button id="undo">undo</button>
+    
+    <script src="script.js"></script>
   </body>
 
 </html>
