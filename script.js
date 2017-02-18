@@ -5,6 +5,9 @@ var size_dropdown = document.getElementById("dropdown");
 var clear_button = document.getElementById("clear");
 var undo_button = document.getElementById("undo");
 
+var amtPlaced = document.getElementById("amtPlaced");
+var amtNeeded = document.getElementById("amtNeeded");
+
 var size = 1;
 var patchSize = 75;
 
@@ -46,6 +49,8 @@ var changeCanvasSize = function(e){
     canvas.setAttribute("width", size * patchSize);
     
     drawBackground();
+
+    amtNeeded.innerHTML = size;
 }
 
 var drawBox = function(x, y){
@@ -84,6 +89,7 @@ var place = function(e){
     var y = ycor - (ycor % 75); 
     drawQueen(x, y);
     queensLocations.push([x, y]);
+    amtPlaced.innerHTML = queensLocations.length;
     checkQueen(x, y);
 }
 
@@ -94,10 +100,17 @@ var undo = function(){
 	var y = lastOne[1];
 	drawBox(x, y);
 	queensLocations.splice(queensLocations.length - 1, 1);
+	amtPlaced.innerHTML = queensLocations.length;
     }    
+}
+
+var clear = function(){
+    drawBackground();
+    queensLocations = [];
+    amtPlaced.innerHTML = queensLocations.length;
 }
 
 size_dropdown.addEventListener("click", changeCanvasSize);
 canvas.addEventListener("click", place);
-clear_button.addEventListener("click", drawBackground);
+clear_button.addEventListener("click", clear);
 undo_button.addEventListener("click", undo);
