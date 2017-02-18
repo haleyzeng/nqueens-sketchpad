@@ -12,6 +12,7 @@ var size = 1;
 var patchSize = 75;
 
 var queensLocations = [];
+var problematic = [];
 
 var requestID;
 
@@ -91,6 +92,23 @@ var place = function(e){
     queensLocations.push([x, y]);
     amtPlaced.innerHTML = queensLocations.length;
     checkQueen(x, y);
+}
+
+var checkQueen = function(x, y){
+    for (var index in queensLocations){
+	var queen = queensLocations[index];
+	var otherX = queen[0];
+	var otherY = queen[1];
+	if (! (otherX == x && otherY == y)) {//not myself
+	    if (otherX == x || otherY == y ||
+		(otherX - x == otherY - y)){
+		console.log(queen);
+		console.log(x);
+		console.log(y);
+		console.log("collision");
+	    }
+	}
+    }
 }
 
 var undo = function(){
