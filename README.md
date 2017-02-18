@@ -1,1 +1,1 @@
-# nqueens-sketchpad
+# canvas
