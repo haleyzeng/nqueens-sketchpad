@@ -99,13 +99,14 @@ var checkQueen = function(x, y){
 	var queen = queensLocations[index];
 	var otherX = queen[0];
 	var otherY = queen[1];
-	if (! (otherX == x && otherY == y)) {//not myself
-	    if (otherX == x || otherY == y ||
-		(otherX - x == otherY - y)){
-		console.log(queen);
-		console.log(x);
-		console.log(y);
-		console.log("collision");
+	if (! (otherX == x && otherY == y)) { //not myself
+	    if (otherX == x || otherY == y || //same row or col
+		(otherX - x == otherY - y)){  //same diagonal
+		if (! problematic.includes(index)){
+		    problematic.push(index);
+		}
+
+		console.log(problematic);
 	    }
 	}
     }
