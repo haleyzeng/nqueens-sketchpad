@@ -5,8 +5,16 @@ var size_dropdown = document.getElementById("dropdown");
 var clear_button = document.getElementById("clear");
 var undo_button = document.getElementById("undo");
 
+var flipH_button = document.getElementById("flipH");
+var flipV_button = document.getElementById("flipV");
+var rotateC_button = document.getElementById("rotateC");
+var rotateCC_button = document.getElementById("rotateCC");
+
 var amtPlaced = document.getElementById("amtPlaced");
 var amtNeeded = document.getElementById("amtNeeded");
+
+var bgdColor0 = "#C47451";
+var bgdColor1 = "#FFFFFF";
 
 var size = 1;
 var patchSize = 75;
@@ -34,16 +42,9 @@ var stop = function(){
     window.cancelAnimationFrame( requestID );
 }
 
-var drawLine = function(x0, y0, x1, y1){
-    ctx.fillStyle = "#000000" ;
-    ctx.beginPath();
-    ctx.moveTo(x0, y0);
-    ctx.lineTo(x1, y1);
-    ctx.stroke();
-
-};
-
 var changeCanvasSize = function(e){
+    clear();
+    
     size = parseInt(size_dropdown.options[size_dropdown.selectedIndex].value);
     
     canvas.setAttribute("height", size * patchSize);
@@ -54,54 +55,54 @@ var changeCanvasSize = function(e){
     amtNeeded.innerHTML = size;
 }
 
-var drawBox = function(x, y){
-    if ((x / 75) % 2 != (y / 75) % 2){
-	ctx.fillStyle = "#C47451";
+var drawBox = function(r, c){
+    if (r % 2 != c % 2){
+	ctx.fillStyle = bgdColor0;
     }
     else {
-	ctx.fillStyle = "#FFFFFF";
+	ctx.fillStyle = bgdColor1;
     }
-    ctx.fillRect(x, y, 75, 75);
+    ctx.fillRect(r * patchSize, c * patchSize, patchSize, patchSize);
 }
 
 var drawBackground = function(){
     for (var i = 0; i < size; i++){
 	for (var j = 0; j < size; j++){
-	    var x = i * patchSize;
-	    var y = j * patchSize;
-	    drawBox(x, y);
+	    drawBox(i, j);
 	}
     }
 }
 
-var drawQueen = function(x, y){
+var drawQueen = function(r, c){
     var queen = new Image(patchSize, patchSize);
     queen.src = "queen.png";
     queen.onload = function(){
-	ctx.drawImage(queen, x, y, patchSize, patchSize);
+	ctx.drawImage(queen, r * patchSize, c * patchSize, patchSize, patchSize);
     }
 }
 
 var place = function(e){
+    if (queensLocations.length == size)
+	return;
     var xcor = e.offsetX;
     var ycor = e.offsetY;
 
-    var x = xcor - (xcor % 75);
-    var y = ycor - (ycor % 75); 
-    drawQueen(x, y);
-    queensLocations.push([x, y]);
+    var r = Math.floor(xcor / 75);
+    var c = Math.floor(ycor / 75); 
+    drawQueen(r, c);
+    queensLocations.push([r, c]);
     amtPlaced.innerHTML = queensLocations.length;
-    checkQueen(x, y);
+    checkQueen(r, c);
 }
 
-var checkQueen = function(x, y){
+var checkQueen = function(r, c){
     for (var index in queensLocations){
 	var queen = queensLocations[index];
-	var otherX = queen[0];
-	var otherY = queen[1];
-	if (! (otherX == x && otherY == y)) { //not myself
-	    if (otherX == x || otherY == y || //same row or col
-		(otherX - x == otherY - y)){  //same diagonal
+	var otherR = queen[0];
+	var otherC = queen[1];
+	if (! (otherR == r && otherC == c)) { //not myself
+	    if (otherR == r || otherC == c || //same row or col
+		(otherR - r == otherC - c)){  //same diagonal
 		if (! problematic.includes(index)){
 		    problematic.push(index);
 		}
@@ -113,23 +114,90 @@ var checkQueen = function(x, y){
 }
 
 var undo = function(){
-    if (queensLocations.length > 0) {
-	var lastOne = queensLocations[queensLocations.length - 1];
-	var x = lastOne[0];
-	var y = lastOne[1];
-	drawBox(x, y);
-	queensLocations.splice(queensLocations.length - 1, 1);
-	amtPlaced.innerHTML = queensLocations.length;
-    }    
+    if (queensLocations.length == 0)
+	return;
+    var lastOne = queensLocations[queensLocations.length - 1];
+    var r = lastOne[0];
+    var c = lastOne[1];
+    drawBox(r, c);
+    queensLocations.splice(queensLocations.length - 1, 1);
+    amtPlaced.innerHTML = queensLocations.length;    
 }
 
 var clear = function(){
-    drawBackground();
     queensLocations = [];
     amtPlaced.innerHTML = queensLocations.length;
+    drawBackground();
+}
+
+
+var drawAllQueens = function(){
+    for (var index = 0; index < queensLocations.length; index++) {
+	var queen = queensLocations[index];
+	drawQueen(queen[0], queen[1]);
+    }
+}
+
+//only run when board has been flipped/rotated
+var updateBgdColors = function(){
+    if (size % 2 == 0){ //no change for odd N boards (rotational and reflective symmetry)
+	var temp = bgdColor1;
+	bgdColor1 = bgdColor0;
+	bgdColor0 = temp;
+    }
+}
+
+var flipCoords = function(coord) {
+    for (var index = 0; index < queensLocations.length; index++) {
+	var queen = queensLocations[index];
+	queen[coord] = size - 1 - queen [coord];
+    }
+}
+
+var flipH = function(){
+    flipCoords(0);
+    updateBgdColors();
+    drawBackground();
+    drawAllQueens();
+}
+
+var flipV = function(){
+    flipCoords(1);
+    updateBgdColors();
+    drawBackground();
+    drawAllQueens();
+}
+
+var rotateCoords = function(dir){
+    for (var index = 0; index < queensLocations.length; index++) {
+	var queen = queensLocations[index];
+	var otherCoord = (dir + 1) % 2;
+	var temp = queen[otherCoord];
+	queen[otherCoord] = queen[dir];
+	queen[dir] = size - 1 - temp;
+    }
+}
+
+var rotateC = function(){
+    rotateCoords(0);
+    updateBgdColors();
+    drawBackground();
+    drawAllQueens();
+}
+
+var rotateCC = function(){
+    rotateCoords(1);
+    updateBgdColors();
+    drawBackground();
+    drawAllQueens();
 }
 
 size_dropdown.addEventListener("click", changeCanvasSize);
 canvas.addEventListener("click", place);
 clear_button.addEventListener("click", clear);
 undo_button.addEventListener("click", undo);
+
+flipH_button.addEventListener("click", flipH);
+flipV_button.addEventListener("click", flipV);
+rotateC_button.addEventListener("click", rotateC);
+rotateCC_button.addEventListener("click", rotateCC);
