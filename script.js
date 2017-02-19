@@ -138,7 +138,7 @@ var undo = function(){
     var lastOne = queensLocations[queensLocations.length - 1];
     var r = lastOne[0];
     var c = lastOne[1];
-    ctx.clearRect(r, c, patchSize, patchSize);
+    ctx.clearRect(r * patchSize, c * patchSize, patchSize, patchSize);
     drawBox(r, c);
     queensLocations.splice(queensLocations.length - 1, 1);
     amtPlaced.innerHTML = queensLocations.length;    
@@ -212,21 +212,21 @@ var rotateCC = function(){
     drawAllQueens();
 }
 
-var convertCanvasForExport = function(){
-    return;
-}
 
 var saveCanvas = function(){
-    convertCanvasForExport();
+    gallery.style.display = "inline";
+    
     var dataURL = canvas.toDataURL();
     var link = document.createElement("a");
     link.setAttribute("href", dataURL);
     link.setAttribute("target", "_blank");
+
     var img = document.createElement("img");
     img.setAttribute("src", dataURL);
     img.setAttribute("height", "100");
     img.setAttribute("width", "100");
     img.setAttribute("border", "1");
+
     link.appendChild(img);
     gallery.appendChild(link);
 }
