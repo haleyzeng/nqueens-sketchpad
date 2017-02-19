@@ -1,0 +1,11 @@
+2.17.17
+* Selecting and changing board size
+* Checkerboard background pattern
+* Placing queens
+* Undo placement
+* Clear queens
+
+2.18.17
+* Detecting collisions between queens
+* Reflecting and rotating board
+* Preventing extraneous queens

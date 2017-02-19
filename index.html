@@ -20,19 +20,28 @@
     </select>
     <br>
     <br>
+    <table>
+      <tr>
+	<td style="padding: 10p; xvertical-align:top;">
+	  <canvas height="75" width="75" style="border: 1px solid;" id="canvas"></canvas>
+	</td>
+	<td style="padding: 10px; vertical-align:top;">
+	  <div id="amtPlaced" style="display: inline-block;">0</div> out of
+	  <div id="amtNeeded" style="display: inline-block;">1</div> placed
+	  <br><br>
+	  <button id="clear">clear</button>
+	  <button id="undo">undo move</button>
+	  <br><br>
+	  <button id="flipH">flip horizontally</button>
+	  <button id="flipV">flip vertically</button>
+	  <br><br>
+	  <button id="rotateC">rotate clockwise</button>
+	  <button id="rotateCC">rotate counter-clockwise</button>
+
+	</td>
+      </tr>
+    </table>
     
-    <canvas height="75" width="75" style="border: 1px solid;" id="canvas"></canvas>
-    <br><br>
-    <div id="amtPlaced" style="display: inline-block;">0</div> out of
-    <div id="amtNeeded" style="display: inline-block;">1</div> placed
-    <br><br>
-    <button id="clear">clear</button>
-    <button id="undo">undo move</button>
-    <br><br>
-    <button id="flipH">flip horizontally</button>
-    <button id="flipV">flip vertically</button>
-    <button id="rotateC">rotate clockwise</button>
-    <button id="rotateCC">rotate counter-clockwise</button>
     <script src="script.js"></script>
   </body>
 

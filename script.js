@@ -81,14 +81,28 @@ var drawQueen = function(r, c){
     }
 }
 
+var canPlaceHere = function(r, c){
+    for (var index = 0; index < queensLocations.length; index++) {
+	var queen = queensLocations[index];
+	if (queen[0] == r && queen[1] == c)
+	    return false;
+    }
+    return true;
+}
+
 var place = function(e){
     if (queensLocations.length == size)
 	return;
+    
     var xcor = e.offsetX;
     var ycor = e.offsetY;
 
     var r = Math.floor(xcor / 75);
     var c = Math.floor(ycor / 75); 
+
+    if (! canPlaceHere(r, c))
+	return;
+    
     drawQueen(r, c);
     queensLocations.push([r, c]);
     amtPlaced.innerHTML = queensLocations.length;
