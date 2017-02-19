@@ -10,6 +10,9 @@ var flipV_button = document.getElementById("flipV");
 var rotateC_button = document.getElementById("rotateC");
 var rotateCC_button = document.getElementById("rotateCC");
 
+var saveImg_button = document.getElementById("saveImg");
+var gallery = document.getElementById("gallery");
+
 var amtPlaced = document.getElementById("amtPlaced");
 var amtNeeded = document.getElementById("amtNeeded");
 
@@ -66,6 +69,7 @@ var drawBox = function(r, c){
 }
 
 var drawBackground = function(){
+    ctx.clearRect(0, 0, patchSize * size, patchSize * size);
     for (var i = 0; i < size; i++){
 	for (var j = 0; j < size; j++){
 	    drawBox(i, j);
@@ -75,7 +79,8 @@ var drawBackground = function(){
 
 var drawQueen = function(r, c){
     var queen = new Image(patchSize, patchSize);
-    queen.src = "queen.png";
+    queen.src = "http://www.i2symbol.com/images/symbols/chess/black_chess_queen_u265B_icon_256x256.png";
+    queen.crossOrigin = "";
     queen.onload = function(){
 	ctx.drawImage(queen, r * patchSize, c * patchSize, patchSize, patchSize);
     }
@@ -133,6 +138,7 @@ var undo = function(){
     var lastOne = queensLocations[queensLocations.length - 1];
     var r = lastOne[0];
     var c = lastOne[1];
+    ctx.clearRect(r, c, patchSize, patchSize);
     drawBox(r, c);
     queensLocations.splice(queensLocations.length - 1, 1);
     amtPlaced.innerHTML = queensLocations.length;    
@@ -206,6 +212,25 @@ var rotateCC = function(){
     drawAllQueens();
 }
 
+var convertCanvasForExport = function(){
+    return;
+}
+
+var saveCanvas = function(){
+    convertCanvasForExport();
+    var dataURL = canvas.toDataURL();
+    var link = document.createElement("a");
+    link.setAttribute("href", dataURL);
+    link.setAttribute("target", "_blank");
+    var img = document.createElement("img");
+    img.setAttribute("src", dataURL);
+    img.setAttribute("height", "100");
+    img.setAttribute("width", "100");
+    img.setAttribute("border", "1");
+    link.appendChild(img);
+    gallery.appendChild(link);
+}
+
 size_dropdown.addEventListener("click", changeCanvasSize);
 canvas.addEventListener("click", place);
 clear_button.addEventListener("click", clear);
@@ -215,3 +240,5 @@ flipH_button.addEventListener("click", flipH);
 flipV_button.addEventListener("click", flipV);
 rotateC_button.addEventListener("click", rotateC);
 rotateCC_button.addEventListener("click", rotateCC);
+
+saveImg_button.addEventListener("click", saveCanvas);
