@@ -9,3 +9,4 @@
 * Detecting collisions between queens
 * Reflecting and rotating board
 * Preventing extraneous queens
+* Saving solutions as images
