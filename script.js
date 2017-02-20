@@ -17,13 +17,11 @@ var showHideInfo = function(){
 
 info_button.addEventListener("click", showHideInfo);
 
-
+//========================================================
 
 
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
-
-
 
 var size_dropdown = document.getElementById("dropdown");
 var clear_button = document.getElementById("clear");
@@ -47,26 +45,58 @@ var size = 1;
 var patchSize = 75;
 
 var queensLocations = [];
-var problematic = [];
+var problematic = {};
 
 var requestID;
 
-var growingCircle = function(){
+var drawRedBox = function(r, c){
+    ctx.fillStyle = "#ff0000";
+    ctx.fillRect(r * patchSize, c * patchSize, patchSize, patchSize);
+}
+
+var requestID;
+
+var flash = function(){
     window.cancelAnimationFrame( requestID );
 
-    //vars
-    
-    var drawDot = function() {
-	
-	//increment val to have animation effect
-	
-	requestID = window.requestAnimationFrame( drawDot );
+    var tick = 0;
+
+    var drawFlash = function() {
+	if (tick == 0 || tick == 3){
+	    for (var key in problematic){
+		var queen = queensLocations[key];
+
+		if (tick == 0)
+		    drawRedBox(queen[0], queen[1]);
+		else
+		    drawBox(queen[0], queen[1]);
+
+		drawQueen(queen[0], queen[1]);
+
+		var listOfColliding = problematic[key];
+
+		for (var index in listOfColliding){
+		    var otherQueen = queensLocations[index];
+		    console.log("index " + index);
+		    console.log(otherQueen);
+		    if (tick == 0)
+			drawRedBox(otherQueen[0], otherQueen[1]);
+		    else
+			drawBox(otherQueen[0], otherQueen[1]);
+		    drawQueen(otherQueen[0], otherQueen[1]);
+		}
+	    }
+	    tick = (tick + 1) % 6;
+	}
     }
-    drawDot();
+    drawFlash();
 }
 
 var stop = function(){
     window.cancelAnimationFrame( requestID );
+    for (queen in problematic){
+	
+    }
 }
 
 var changeCanvasSize = function(e){
@@ -76,9 +106,9 @@ var changeCanvasSize = function(e){
     
     canvas.setAttribute("height", size * patchSize);
     canvas.setAttribute("width", size * patchSize);
-    
-    drawBackground();
 
+    drawBackground();
+    
     amtNeeded.innerHTML = size;
 }
 
@@ -131,46 +161,81 @@ var place = function(e){
 
     if (! canPlaceHere(r, c))
 	return;
-    
     drawQueen(r, c);
     queensLocations.push([r, c]);
     amtPlaced.innerHTML = queensLocations.length;
-    checkQueen(r, c);
+    checkQueen(queensLocations.length - 1);
+
+    animation();
 }
 
-var checkQueen = function(r, c){
-    for (var index in queensLocations){
-	var queen = queensLocations[index];
-	var otherR = queen[0];
-	var otherC = queen[1];
-	if (! (otherR == r && otherC == c)) { //not myself
-	    if (otherR == r || otherC == c || //same row or col
-		(otherR - r == otherC - c)){  //same diagonal
-		if (! problematic.includes(index)){
-		    problematic.push(index);
-		}
+var checkQueen = function(i){
 
-		console.log(problematic);
+    var collisions = [];
+
+    var r = queensLocations[i][0];
+    var c = queensLocations[i][1];
+
+    for (var index in queensLocations){
+	if (index != i) {
+	    var queen = queensLocations[index];
+	    var otherR = queen[0];
+	    var otherC = queen[1];
+
+	    if (otherR == r || otherC == c || //same row or col
+		(otherR - r == otherC - c) || //diagonal topleft-bottomright
+		(otherR - r == c - otherC)) { //diagonal bottomleft-topright
+		collisions.push(index);	
 	    }
 	}
     }
+    
+    if (collisions.length > 0)
+	problematic[i] = collisions;
+
+}
+
+var anyProblematic = function(){
+  return problematic.length > 0;
+}
+
+
+var animation = function(){
+    if (anyProblematic)
+	flash();
+    else 
+	stop();
 }
 
 var undo = function(){
     if (queensLocations.length == 0)
 	return;
-    var lastOne = queensLocations[queensLocations.length - 1];
+    var lastIndex = queensLocations.length - 1;
+    var lastOne = queensLocations[lastIndex];
     var r = lastOne[0];
     var c = lastOne[1];
+
     ctx.clearRect(r * patchSize, c * patchSize, patchSize, patchSize);
     drawBox(r, c);
+
     queensLocations.splice(queensLocations.length - 1, 1);
-    amtPlaced.innerHTML = queensLocations.length;    
+
+    if (lastIndex in problematic) {
+	for (var index in problematic[lastIndex]){
+	    var queen = queensLocations[index];
+	    drawBox(queen[0], queen[1]);
+	    drawQueen(queen[0], queen[1]);
+	}
+	delete problematic[lastIndex];
+    }
+    amtPlaced.innerHTML = queensLocations.length; 
+    animation();
 }
 
 var clear = function(){
     queensLocations = [];
-    amtPlaced.innerHTML = queensLocations.length;
+    problematic = {};
+    amtPlaced.innerHTML = 0;
     drawBackground();
 }
 
