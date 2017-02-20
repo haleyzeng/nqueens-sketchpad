@@ -10,3 +10,8 @@
 * Reflecting and rotating board
 * Preventing extraneous queens
 * Saving solutions as images
+
+2.19.17
+* Storing collision information
+* Flashing animation for collisions
+* Update collision information when undo/clear

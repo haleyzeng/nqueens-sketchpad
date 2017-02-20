@@ -33,6 +33,7 @@ var rotateC_button = document.getElementById("rotateC");
 var rotateCC_button = document.getElementById("rotateCC");
 
 var saveImg_button = document.getElementById("saveImg");
+var saveErrorDiv = document.getElementById("saveError");
 var gallery = document.getElementById("gallery");
 
 var amtPlaced = document.getElementById("amtPlaced");
@@ -60,24 +61,25 @@ var flash = function(){
     window.cancelAnimationFrame( requestID );
 
     var tick = 0;
-
+    
     var drawFlash = function() {
-	if (tick == 0 || tick == 3){
+	if (tick == 0 || tick == 30){
 	    for (var key in problematic){
 		var queen = queensLocations[key];
 
-		if (tick == 0)
+		if (tick == 0) {
 		    drawRedBox(queen[0], queen[1]);
-		else
+		}
+		else {
 		    drawBox(queen[0], queen[1]);
 
+		}
 		drawQueen(queen[0], queen[1]);
 
 		var listOfColliding = problematic[key];
 
 		for (var index in listOfColliding){
 		    var otherQueen = queensLocations[index];
-		    console.log("index " + index);
 		    console.log(otherQueen);
 		    if (tick == 0)
 			drawRedBox(otherQueen[0], otherQueen[1]);
@@ -86,17 +88,17 @@ var flash = function(){
 		    drawQueen(otherQueen[0], otherQueen[1]);
 		}
 	    }
-	    tick = (tick + 1) % 6;
 	}
+
+	tick = (tick + 1) % 60;
+	requestID = window.requestAnimationFrame(drawFlash);
     }
     drawFlash();
 }
 
 var stop = function(){
     window.cancelAnimationFrame( requestID );
-    for (queen in problematic){
-	
-    }
+
 }
 
 var changeCanvasSize = function(e){
@@ -303,6 +305,11 @@ var rotateCC = function(){
 
 
 var saveCanvas = function(){
+    if (queensLocations.length < size || anyProblematic()){
+	saveErrorDiv.innerHTML = "This is not a solution.";
+	return;
+    }
+    saveErrorDiv.innerHTML = "";
     gallery.style.display = "inline";
     
     var dataURL = canvas.toDataURL();
