@@ -192,8 +192,8 @@ var undo = function(){
     queensLocations.splice(queensLocations.length - 1, 1);
 
     if (lastIndex in problematic) {
-	for (var index in problematic[lastIndex]){
-	    var queen = queensLocations[index];
+	for (var index = 0; index < problematic[lastIndex].length; index++){
+	    var queen = queensLocations[problematic[lastIndex][index]];
 	    drawBox(queen[0], queen[1]);
 	    drawQueen(queen[0], queen[1]);
 	}
