@@ -1,25 +1,3 @@
-var info_button = document.getElementById("infoBtn");
-var info = document.getElementById("info");
-var infoShowing = false;
-
-var showHideInfo = function(){
-    if (infoShowing){
-	info.style.display = "none";
-	info_button.innerHTML = "What is this?"
-    }
-    else {
-	info.style.display = "inline";
-	info.style.width = "50%";
-	info_button.innerHTML = "got it"
-    }
-    infoShowing = ! infoShowing;
-}
-
-info_button.addEventListener("click", showHideInfo);
-
-//========================================================
-
-
 var canvas = document.getElementById("canvas");
 var ctx = canvas.getContext("2d");
 
@@ -31,10 +9,6 @@ var flipH_button = document.getElementById("flipH");
 var flipV_button = document.getElementById("flipV");
 var rotateC_button = document.getElementById("rotateC");
 var rotateCC_button = document.getElementById("rotateCC");
-
-var saveImg_button = document.getElementById("saveImg");
-var saveErrorDiv = document.getElementById("saveError");
-var gallery = document.getElementById("gallery");
 
 var amtPlaced = document.getElementById("amtPlaced");
 var amtNeeded = document.getElementById("amtNeeded");
@@ -66,7 +40,6 @@ var flash = function(){
 	if (tick == 0 || tick == 30){
 	    for (var key in problematic){
 		var queen = queensLocations[key];
-
 		if (tick == 0) {
 		    drawRedBox(queen[0], queen[1]);
 		}
@@ -77,10 +50,9 @@ var flash = function(){
 		drawQueen(queen[0], queen[1]);
 
 		var listOfColliding = problematic[key];
-
-		for (var index in listOfColliding){
+		for (var pos = 0; pos < listOfColliding.length; pos++){
+		    var index = listOfColliding[pos];
 		    var otherQueen = queensLocations[index];
-		    console.log(otherQueen);
 		    if (tick == 0)
 			drawRedBox(otherQueen[0], otherQueen[1]);
 		    else
@@ -135,8 +107,8 @@ var drawBackground = function(){
 
 var drawQueen = function(r, c){
     var queen = new Image(patchSize, patchSize);
+    queen.setAttribute('crossOrigin', 'anonymous');
     queen.src = "http://www.i2symbol.com/images/symbols/chess/black_chess_queen_u265B_icon_256x256.png";
-    queen.crossOrigin = "";
     queen.onload = function(){
 	ctx.drawImage(queen, r * patchSize, c * patchSize, patchSize, patchSize);
     }
@@ -172,13 +144,12 @@ var place = function(e){
 }
 
 var checkQueen = function(i){
-
     var collisions = [];
 
     var r = queensLocations[i][0];
     var c = queensLocations[i][1];
 
-    for (var index in queensLocations){
+    for (var index = 0; index < queensLocations.length; index++){
 	if (index != i) {
 	    var queen = queensLocations[index];
 	    var otherR = queen[0];
@@ -191,19 +162,17 @@ var checkQueen = function(i){
 	    }
 	}
     }
-    
     if (collisions.length > 0)
 	problematic[i] = collisions;
-
 }
 
 var anyProblematic = function(){
-  return problematic.length > 0;
+    return ! (Object.keys(problematic).length === 0 && problematic.constructor === Object);
 }
 
 
 var animation = function(){
-    if (anyProblematic)
+    if (anyProblematic())
 	flash();
     else 
 	stop();
@@ -303,30 +272,6 @@ var rotateCC = function(){
     drawAllQueens();
 }
 
-
-var saveCanvas = function(){
-    if (queensLocations.length < size || anyProblematic()){
-	saveErrorDiv.innerHTML = "This is not a solution.";
-	return;
-    }
-    saveErrorDiv.innerHTML = "";
-    gallery.style.display = "inline";
-    
-    var dataURL = canvas.toDataURL();
-    var link = document.createElement("a");
-    link.setAttribute("href", dataURL);
-    link.setAttribute("target", "_blank");
-
-    var img = document.createElement("img");
-    img.setAttribute("src", dataURL);
-    img.setAttribute("height", "100");
-    img.setAttribute("width", "100");
-    img.setAttribute("border", "1");
-
-    link.appendChild(img);
-    gallery.appendChild(link);
-}
-
 size_dropdown.addEventListener("click", changeCanvasSize);
 canvas.addEventListener("click", place);
 clear_button.addEventListener("click", clear);
@@ -336,5 +281,3 @@ flipH_button.addEventListener("click", flipH);
 flipV_button.addEventListener("click", flipV);
 rotateC_button.addEventListener("click", rotateC);
 rotateCC_button.addEventListener("click", rotateCC);
-
-saveImg_button.addEventListener("click", saveCanvas);

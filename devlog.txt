@@ -15,3 +15,9 @@
 * Storing collision information
 * Flashing animation for collisions
 * Update collision information when undo/clear
+
+2.22.17
+* Animation bug fixes
+* Saving image bug fixes
+* Separated js into three files
+* Deleting saved solutions

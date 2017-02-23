@@ -10,7 +10,7 @@
     <div id="info" style="display: none">
       <p>This is a tool for students learning backtracking and working on the <a href="https://en.wikipedia.org/wiki/Eight_queens_puzzle">N-Queens problem.</a> This sketchpad allows users to find solutions to an NxN board by hand to better understand the nature of the problem and the process of solving it.</p>
       <p>Idea by Mr. Holmes. Coded by Haley Zeng (Stuy '17)</p>
-      <p>Last updated February 19, 2017</p>
+      <p>Last updated February 22, 2017</p>
     </div>
     Select size:<br>
     <select id="dropdown">
@@ -43,7 +43,7 @@
 	  <button id="rotateC">rotate clockwise</button>
 	  <button id="rotateCC">rotate counter-clockwise</button>
 	  <br><br>
-	  <button id="saveImg">save solution</button>
+	  <button id="saveImg">save canvas</button>
 	  <div id="saveError" style="color: red;"></div>
 	</td>
       </tr>
@@ -52,11 +52,13 @@
       <tr>
 	<td id="gallery" style="display:none">
 	  <h3>Saved solutions</h3>
+	  <p>Click to open in new tab</p>
 	</td>
       </tr>
     </table>
-    
-    <script src="script.js"></script>
+    <script src="info.js"></script>
+    <script src="draw.js"></script>
+    <script src="save.js"></script>
   </body>
 
 </html>
