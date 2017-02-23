@@ -8,3 +8,7 @@ _A tool to help students work out solutions to the N-Queens problem._
 * Warned of incorrect moves
 * Rotate or flip the board
 * Export drawing as an image 
+
+Coded by Haley Zeng (Stuy '17)
+
+Last updated February 22, 2017
